@@ -5,9 +5,12 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
+
+import com.github.mateuszwenus.spring4_webapp.auth.AuthorizeRequestInterceptor;
 
 @Configuration
 @EnableWebMvc
@@ -17,6 +20,16 @@ public class WebConfig extends WebMvcConfigurerAdapter {
   @Override
   public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
     configurer.enable();
+  }
+
+  @Override
+  public void addInterceptors(InterceptorRegistry registry) {
+    registry.addInterceptor(authorizeRequestInterceptor());
+  }
+
+  @Bean
+  public AuthorizeRequestInterceptor authorizeRequestInterceptor() {
+    return new AuthorizeRequestInterceptor();
   }
 
   @Bean
