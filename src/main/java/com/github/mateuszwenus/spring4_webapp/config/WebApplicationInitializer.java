@@ -6,7 +6,7 @@ public class WebApplicationInitializer extends AbstractAnnotationConfigDispatche
 
   @Override
   protected Class<?>[] getRootConfigClasses() {
-    return new Class[] { SecurityConfig.class };
+    return new Class[] { RootConfig.class, WebSecurityConfig.class, CustomGlobalMethodSecurityConfiguration.class };
   }
 
   @Override

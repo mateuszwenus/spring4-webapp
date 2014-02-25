@@ -1,24 +1,23 @@
 package com.github.mateuszwenus.spring4_webapp.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
+import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration;
 
-//@Configuration
-//@EnableGlobalMethodSecurity
-//public class CustomGlobalMethodSecurityConfiguration extends GlobalMethodSecurityConfiguration {
-//
-//  @Bean
-//  @Override
-//  @SuppressWarnings("rawtypes")
-//  protected AccessDecisionManager accessDecisionManager() {
-//    AbstractAccessDecisionManager accessDecisionManager = (AbstractAccessDecisionManager) super.accessDecisionManager();
-//    List<AccessDecisionVoter> voters = new ArrayList<AccessDecisionVoter>(accessDecisionManager.getDecisionVoters());
-//    WebExpressionVoter webExpressionVoter = new WebExpressionVoter();
-//    webExpressionVoter.setExpressionHandler(filterInvocationSecurityExpressionHandler());
-//    voters.add(webExpressionVoter);
-//    return new AffirmativeBased(voters);
-//  }
-//
-//  @Bean
-//  public SecurityExpressionHandler<FilterInvocation> filterInvocationSecurityExpressionHandler() {
-//    return new DefaultWebSecurityExpressionHandler();
-//  }
-// }
+@Configuration
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class CustomGlobalMethodSecurityConfiguration extends GlobalMethodSecurityConfiguration {
+
+  @Autowired
+  private WebSecurityConfig securityConfig;
+
+  @Override
+  protected MethodSecurityExpressionHandler createExpressionHandler() {
+    DefaultMethodSecurityExpressionHandler handler = new DefaultMethodSecurityExpressionHandler();
+    handler.setRoleHierarchy(securityConfig.roleHierarchy());
+    return handler;
+  }
+}

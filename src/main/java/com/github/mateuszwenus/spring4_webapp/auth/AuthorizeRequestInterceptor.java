@@ -32,13 +32,17 @@ public class AuthorizeRequestInterceptor extends HandlerInterceptorAdapter {
       HandlerMethod handlerMethod = (HandlerMethod) handler;
       AuthorizeRequest ann = handlerMethod.getMethodAnnotation(AuthorizeRequest.class);
       if (ann != null) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        FilterInvocation filterInvocation = new FilterInvocation(request, response, new NullFilterChain());
-        Expression expr = securityExpressionHandler.getExpressionParser().parseExpression(ann.value());
-        List<ConfigAttribute> configAttributes = Arrays.<ConfigAttribute> asList(new PublicWebExpressionConfigAttribute(expr));
-        accessDecisionManager.decide(authentication, filterInvocation, configAttributes);
+        checkAccess(request, response, ann);
       }
     }
     return true;
+  }
+
+  private void checkAccess(HttpServletRequest request, HttpServletResponse response, AuthorizeRequest ann) {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    FilterInvocation filterInvocation = new FilterInvocation(request, response, new NullFilterChain());
+    Expression expr = securityExpressionHandler.getExpressionParser().parseExpression(ann.value());
+    List<ConfigAttribute> configAttributes = Arrays.<ConfigAttribute> asList(new PublicWebExpressionConfigAttribute(expr));
+    accessDecisionManager.decide(authentication, filterInvocation, configAttributes);
   }
 }
