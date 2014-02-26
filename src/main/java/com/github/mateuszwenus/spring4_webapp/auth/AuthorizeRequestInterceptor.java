@@ -24,25 +24,26 @@ public class AuthorizeRequestInterceptor extends HandlerInterceptorAdapter {
   private AccessDecisionManager accessDecisionManager;
 
   @Autowired
-  private SecurityExpressionHandler<FilterInvocation> securityExpressionHandler;
+  private SecurityExpressionHandler<FilterInvocation> securityExprHandler;
 
   @Override
-  public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+  public boolean preHandle(HttpServletRequest req, HttpServletResponse resp, Object handler) {
     if (handler instanceof HandlerMethod) {
       HandlerMethod handlerMethod = (HandlerMethod) handler;
       AuthorizeRequest ann = handlerMethod.getMethodAnnotation(AuthorizeRequest.class);
       if (ann != null) {
-        checkAccess(request, response, ann);
+        checkAccess(req, resp, ann);
       }
     }
     return true;
   }
 
-  private void checkAccess(HttpServletRequest request, HttpServletResponse response, AuthorizeRequest ann) {
+  private void checkAccess(HttpServletRequest req, HttpServletResponse resp, AuthorizeRequest ann) {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    FilterInvocation filterInvocation = new FilterInvocation(request, response, new NullFilterChain());
-    Expression expr = securityExpressionHandler.getExpressionParser().parseExpression(ann.value());
-    List<ConfigAttribute> configAttributes = Arrays.<ConfigAttribute> asList(new PublicWebExpressionConfigAttribute(expr));
-    accessDecisionManager.decide(authentication, filterInvocation, configAttributes);
+    FilterInvocation fi = new FilterInvocation(req, resp, new NullFilterChain());
+    Expression expr = securityExprHandler.getExpressionParser().parseExpression(ann.value());
+    ConfigAttribute configAttribute = new PublicWebExpressionConfigAttribute(expr);
+    List<ConfigAttribute> configAttributes = Arrays.asList(configAttribute);
+    accessDecisionManager.decide(authentication, fi, configAttributes);
   }
 }
