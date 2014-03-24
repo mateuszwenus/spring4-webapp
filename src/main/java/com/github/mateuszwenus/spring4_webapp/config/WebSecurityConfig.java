@@ -18,10 +18,10 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.access.expression.WebExpressionVoter;
 
-import com.github.mateuszwenus.spring4_webapp.auth.ExpressionBasedHandlerInvocationSecurityMetadataSource;
-import com.github.mateuszwenus.spring4_webapp.auth.HandlerInvocationSecurityMetadataSource;
-import com.github.mateuszwenus.spring4_webapp.auth.HandlerSecurityInterceptor;
-import com.github.mateuszwenus.spring4_webapp.auth.WebExpressionVoterAdapter;
+import com.github.mateuszwenus.spring_security_controller_auth.ExpressionBasedHandlerInvocationSecurityMetadataSource;
+import com.github.mateuszwenus.spring_security_controller_auth.HandlerInvocationSecurityMetadataSource;
+import com.github.mateuszwenus.spring_security_controller_auth.HandlerSecurityInterceptor;
+import com.github.mateuszwenus.spring_security_controller_auth.WebExpressionVoterAdapter;
 
 @Configuration
 @EnableWebSecurity

@@ -8,8 +8,8 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.github.mateuszwenus.spring4_webapp.auth.AuthorizeRequest;
 import com.github.mateuszwenus.spring4_webapp.service.FooService;
+import com.github.mateuszwenus.spring_security_controller_auth.AuthorizeRequest;
 
 @Controller
 public class AppController {
