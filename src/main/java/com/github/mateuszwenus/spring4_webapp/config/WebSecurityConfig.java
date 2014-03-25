@@ -18,8 +18,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.access.expression.WebExpressionVoter;
 
-import com.github.mateuszwenus.spring_security_controller_auth.ExpressionBasedHandlerInvocationSecurityMetadataSource;
-import com.github.mateuszwenus.spring_security_controller_auth.HandlerInvocationSecurityMetadataSource;
 import com.github.mateuszwenus.spring_security_controller_auth.HandlerSecurityInterceptor;
 import com.github.mateuszwenus.spring_security_controller_auth.WebExpressionVoterAdapter;
 
@@ -48,11 +46,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   
   @Bean
   public HandlerSecurityInterceptor handlerSecurityInterceptor() {
-    HandlerSecurityInterceptor interceptor = new HandlerSecurityInterceptor();
-    AccessDecisionManager accessDecisionManager = handlerAccessDecisionManager();
-    interceptor.setAccessDecisionManager(accessDecisionManager);
+    HandlerSecurityInterceptor interceptor = HandlerSecurityInterceptor.create();
+    interceptor.setAccessDecisionManager(handlerAccessDecisionManager());
     interceptor.setAuthenticationManager(authenticationManagerBean());
-    interceptor.setSecurityMetadataSource(handlerInvocationSecurityMetadataSource());
     return interceptor;
   }
 
@@ -75,11 +71,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   @Bean
   public WebExpressionVoterAdapter webExpressionVoterAdapter() {
     return new WebExpressionVoterAdapter(webExpressionVoter());
-  }
-
-  @Bean
-  public HandlerInvocationSecurityMetadataSource handlerInvocationSecurityMetadataSource() {
-    return new ExpressionBasedHandlerInvocationSecurityMetadataSource();
   }
 
   @SuppressWarnings("rawtypes")
