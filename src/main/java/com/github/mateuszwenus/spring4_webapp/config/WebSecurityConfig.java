@@ -10,6 +10,7 @@ import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.access.vote.AffirmativeBased;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -17,13 +18,16 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.access.expression.WebExpressionVoter;
 
+import com.github.mateuszwenus.spring_security_controller_auth.HandlerSecurityInterceptor;
+import com.github.mateuszwenus.spring_security_controller_auth.WebExpressionVoterAdapter;
+
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-    http.authorizeRequests().accessDecisionManager(accessDecisionManager())
+    http.authorizeRequests().accessDecisionManager(webAccessDecisionManager())
       .antMatchers("/user").hasRole("USER")
       .antMatchers("/manager").hasRole("MANAGER")
       .antMatchers("/admin").hasRole("ADMIN")
@@ -40,14 +44,48 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
       .withUser("admin").password("admin").roles("ADMIN");
   }
   
+  @Bean
+  public HandlerSecurityInterceptor handlerSecurityInterceptor() {
+    HandlerSecurityInterceptor interceptor = HandlerSecurityInterceptor.create();
+    interceptor.setAccessDecisionManager(handlerAccessDecisionManager());
+    interceptor.setAuthenticationManager(authenticationManagerBean());
+    return interceptor;
+  }
+
   @SuppressWarnings("rawtypes")
   @Bean
-  public AccessDecisionManager accessDecisionManager() {
+  public AccessDecisionManager handlerAccessDecisionManager() {
+    return new AffirmativeBased(Arrays.<AccessDecisionVoter> asList(webExpressionVoterAdapter()));
+  }
+
+  @Bean
+  @Override
+  public AuthenticationManager authenticationManagerBean() {
+    try {
+      return super.authenticationManagerBean();
+    } catch (Exception e) {
+      throw new IllegalStateException(e);
+    }
+  }
+
+  @Bean
+  public WebExpressionVoterAdapter webExpressionVoterAdapter() {
+    return new WebExpressionVoterAdapter(webExpressionVoter());
+  }
+
+  @SuppressWarnings("rawtypes")
+  @Bean
+  public AccessDecisionManager webAccessDecisionManager() {
+    return new AffirmativeBased(Arrays.<AccessDecisionVoter> asList(webExpressionVoter()));
+  }
+
+  @Bean
+  public WebExpressionVoter webExpressionVoter() {
     WebExpressionVoter webExpressionVoter = new WebExpressionVoter();
     DefaultWebSecurityExpressionHandler expressionHandler = new DefaultWebSecurityExpressionHandler();
     expressionHandler.setRoleHierarchy(roleHierarchy());
     webExpressionVoter.setExpressionHandler(expressionHandler);
-    return new AffirmativeBased(Arrays.<AccessDecisionVoter> asList(webExpressionVoter));
+    return webExpressionVoter;
   }
 
   @Bean

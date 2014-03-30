@@ -22,7 +22,7 @@
 		<td><a href="[@spring.url "/admin" /]">Admin Page</a></td>
 	</tr>
 	<tr>
-		<td>AuthorizeRequestInterceptor</td>
+		<td>HandlerSecurityInterceptor</td>
 		<td><a href="[@spring.url "/user2" /]">User Page</a></td>
 		<td><a href="[@spring.url "/manager2" /]">Manager Page</a></td>
 		<td><a href="[@spring.url "/admin2" /]">Admin Page</a></td>
