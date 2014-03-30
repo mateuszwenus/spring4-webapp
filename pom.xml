@@ -4,7 +4,7 @@
   <groupId>com.github.mateuszwenus</groupId>
   <artifactId>spring4-webapp</artifactId>
   <packaging>war</packaging>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.1</version>
   <name>spring4-webapp Maven Webapp</name>
   <url>http://maven.apache.org</url>
 
